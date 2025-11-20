@@ -294,9 +294,12 @@ class GracefulServer:
         self._httpd.daemon_threads = True
         logger.info("Servidor iniciado em http://%s:%d (dist=%s)", self._host, self._port, DIST_DIR)
 
+        httpd = self._httpd
+        assert httpd is not None
+
         def loop() -> None:
             while not self._shutdown_event.is_set():
-                self._httpd.handle_request()
+                httpd.handle_request()
             logger.debug("Loop principal encerrado.")
 
         self._thread = threading.Thread(target=loop, name="HTTPMainLoop", daemon=True)
